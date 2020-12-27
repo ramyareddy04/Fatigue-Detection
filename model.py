@@ -53,8 +53,8 @@ model = Sequential([
     Dense(18, activation='softmax')
 ])
 
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-model.fit(train_batch, validation_data=valid_batch, epochs=15, steps_per_epoch=SPE, validation_steps=VS)
+model.fit(train_batch, validation_data=valid_batch, epochs=20, steps_per_epoch=SPE, validation_steps=VS)
 
-model.save('models/cnnCat6.h5', overwrite=True)
+model.save('models/cnnCat7.h5', overwrite=True)
