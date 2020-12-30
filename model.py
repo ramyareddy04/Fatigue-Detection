@@ -8,7 +8,7 @@ from keras.models import Sequential
 from keras.layers import Dropout, Conv2D, Flatten, Dense, MaxPooling2D, BatchNormalization
 from keras.models import load_model
 
-
+os.environ["CUDA_VISIBLE_DEVICES"]="-1"
 def generator(dir, gen=image.ImageDataGenerator(rescale=1. / 255), shuffle=True, batch_size=1, target_size=(24, 24),
               class_mode='categorical'):
     return gen.flow_from_directory(dir, batch_size=batch_size, shuffle=shuffle, color_mode='grayscale',
@@ -50,11 +50,11 @@ model = Sequential([
     # one more dropout for convergence' sake :)
     Dropout(0.5),
     # output a softmax to squash the matrix into output probabilities
-    Dense(18, activation='softmax')
+    Dense(18, activation='softmax') #use softmax when doing multiclass/ use sigmoid when doing binary
 ])
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-model.fit_generator(train_batch, validation_data=valid_batch, epochs=15, steps_per_epoch=SPE, validation_steps=VS)
+model.fit(train_batch, validation_data=valid_batch, epochs=20, steps_per_epoch=SPE, validation_steps=VS)
 
 model.save('models/cnnCat3.h5', overwrite=True)
