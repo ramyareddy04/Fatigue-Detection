@@ -16,7 +16,7 @@ reye = cv2.CascadeClassifier('haar cascade files\haarcascade_righteye_2splits.xm
 
 lbl = ['Close', 'Open']
 
-model = load_model('models/test1.h5')
+model = load_model('models/test10.h5')
 path = os.getcwd()
 cap = cv2.VideoCapture(0)
 font = cv2.FONT_HERSHEY_COMPLEX_SMALL
@@ -68,7 +68,7 @@ while (True):
         l_eye = l_eye.reshape(24, 24, -1)
         l_eye = np.expand_dims(l_eye, axis=0)
         lpred = np.argmax(model.predict(l_eye), axis=-1)
-        lpred = np.argmax(model.predict(l_eye) > 0.5).astype("int32")
+        # lpred = np.argmax(model.predict(l_eye) > 0.5).astype("int32")
         if (lpred[0] == 1):
             lbl = 'Open'
         if (lpred[0] == 0):
