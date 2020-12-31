@@ -13,7 +13,7 @@ from keras.layers import Dropout, Conv2D, Flatten, Dense, MaxPooling2D, BatchNor
 from keras.models import load_model
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-train_data = pd.read_csv('train.csv', dtype=str)
+train_data = pd.read_csv('trainBinary.csv', dtype=str)
 batchSize = 32
 targetSize = (24, 24)
 
@@ -22,19 +22,16 @@ train_batch = datagen.flow_from_dataframe(dataframe=train_data, directory="data/
                                           subset="training",
                                           batch_size=batchSize, seed=42,
                                           shuffle=True,
-                                          class_mode="categorical",
+                                          class_mode="binary",
                                           target_size=targetSize)
 valid_batch = datagen.flow_from_dataframe(dataframe=train_data, directory="data/finData/", x_col="filename", y_col="label",
                                           subset="validation",
                                           batch_size=batchSize, seed=42,
                                           shuffle=True,
-                                          class_mode="categorical",
+                                          class_mode="binary",
                                           target_size=targetSize)
 # train_batch = generator('data/train', shuffle=True, batch_size=batchSize, target_size=targetSize)
 #valid_batch = generator('data/train', shuffle=True, batch_size=batchSize, target_size=targetSize)
-SPE = len(train_batch.classes) // batchSize
-VS = len(valid_batch.classes) // batchSize
-print(SPE, VS)
 
 STEP_SIZE_TRAIN=train_batch.n//train_batch.batch_size
 STEP_SIZE_VALID=valid_batch.n//valid_batch.batch_size
@@ -67,10 +64,10 @@ model = Sequential([
     # one more dropout for convergence' sake :)
     Dropout(0.25),
     # output a softmax to squash the matrix into output probabilities
-    Dense(4, activation='softmax')  # use softmax when doing multiclass/ use sigmoid when doing binary
+    Dense(1, activation='sigmoid')  # use softmax when doing multiclass/ use sigmoid when doing binary
 ])
 
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
 model.fit(train_batch, validation_data=valid_batch, epochs=100, steps_per_epoch=STEP_SIZE_TRAIN, validation_steps=STEP_SIZE_VALID)
 
