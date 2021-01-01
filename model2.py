@@ -14,10 +14,10 @@ from keras.models import load_model
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 train_data = pd.read_csv('trainBinary.csv', dtype=str)
-batchSize = 32
+batchSize = 25
 targetSize = (24, 24)
 
-datagen = ImageDataGenerator(rescale=1. / 255, validation_split=0.2)
+datagen = ImageDataGenerator(rescale=1. / 255, validation_split=0.3)
 train_batch = datagen.flow_from_dataframe(dataframe=train_data, directory="data/finData/", x_col="filename", y_col="label",
                                           subset="training",
                                           batch_size=batchSize, seed=42,
