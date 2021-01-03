@@ -14,10 +14,10 @@ from keras.models import load_model
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 train_data = pd.read_csv('trainBinary.csv', dtype=str)
-batchSize = 25
+batchSize = 32
 targetSize = (24, 24)
 
-datagen = ImageDataGenerator(rescale=1. / 255, validation_split=0.3)
+datagen = ImageDataGenerator(rescale=1. / 255, validation_split=0.1)
 train_batch = datagen.flow_from_dataframe(dataframe=train_data, directory="data/finData/", x_col="filename", y_col="label",
                                           subset="training",
                                           batch_size=batchSize, seed=42,
@@ -45,22 +45,24 @@ model = Sequential([
 
     Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(24, 24, 3)),
     MaxPooling2D(pool_size=(1, 1)),
+    Dropout(0.35),
     Conv2D(32, (3, 3), activation='relu'),
     MaxPooling2D(pool_size=(1, 1)),
     # 32 convolution filters used each of size 3x3
-    # again
+    # # again
+    Dropout(0.40),
     Conv2D(64, (3, 3), activation='relu'),
     MaxPooling2D(pool_size=(1, 1)),
-
+    Dropout(0.35),
     # 64 convolution filters used each of size 3x3
     # choose the best features via pooling
-
+    Dense(32, activation='relu'),
     # randomly turn neurons on and off to improve convergence
     Dropout(0.25),
     # flatten since too many dimensions, we only want a classification output
     Flatten(),
     # fully connected to get all relevant data
-    Dense(32, activation='relu'),
+    Dense(16, activation='relu'),
     # one more dropout for convergence' sake :)
     Dropout(0.25),
     # output a softmax to squash the matrix into output probabilities
@@ -69,6 +71,6 @@ model = Sequential([
 
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-model.fit(train_batch, validation_data=valid_batch, epochs=100, steps_per_epoch=STEP_SIZE_TRAIN, validation_steps=STEP_SIZE_VALID)
+model.fit(train_batch, validation_data=valid_batch, epochs=50, steps_per_epoch=STEP_SIZE_TRAIN, validation_steps=STEP_SIZE_VALID)
 
-model.save('models/newtest2.h5', overwrite=True)
+model.save('models/categoricalTest7.h5', overwrite=True)
